@@ -1,6 +1,7 @@
 package com.witherxee.nanocraft;
 
 import com.mojang.logging.LogUtils;
+import com.witherxee.nanocraft.registry.ModBlockEntity;
 import com.witherxee.nanocraft.registry.ModBlocks;
 import com.witherxee.nanocraft.registry.ModItems;
 import net.neoforged.bus.api.IEventBus;
@@ -18,6 +19,7 @@ public class Nanocraft {
 
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
+        ModBlockEntity.register(modEventBus);
 
         LOGGER.info("NanoCraft loaded!");
     }
