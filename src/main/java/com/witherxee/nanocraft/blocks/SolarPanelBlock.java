@@ -53,7 +53,8 @@ public class SolarPanelBlock extends Block implements EntityBlock {
             Block.box(0, 13, 8.5, 16, 14.5, 9.5),
             Block.box(0, 14.5, 9.5, 16, 16, 10.5),
             Block.box(0, 16, 10.5, 16, 17.5, 11.5),
-            Block.box(0, 17.5, 11.5, 16, 19, 12.5)
+            Block.box(0, 17.5, 11.5, 16, 19, 12.5),
+            Block.box(0, 19, 12.5, 16, 20.5, 13.5)
     );
 
     public SolarPanelBlock(Properties properties) {
