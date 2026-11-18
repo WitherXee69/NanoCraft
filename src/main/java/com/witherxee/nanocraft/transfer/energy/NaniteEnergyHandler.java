@@ -52,7 +52,7 @@ public class NaniteEnergyHandler implements EnergyHandler, ValueIOSerializable {
 
     @Override
     public void deserialize(ValueInput input) {
-        nEnergy = Math.max(0, input.getIntOr("energy", 0));
+        nEnergy = Math.max(0, input.getIntOr("nEnergy", 0));
     }
 
     @Override
