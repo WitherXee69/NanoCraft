@@ -9,11 +9,15 @@ import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.NonNull;
 
+import java.util.function.BiConsumer;
+
 public class NaniteEnergyHandler implements EnergyHandler, ValueIOSerializable {
     protected int nEnergy;
     protected int capacity;
     protected int maxInsert;
     protected int maxExtract;
+
+    protected final BiConsumer<Integer, Integer> energyChangedCallback;
 
     private final NaniteEnergySnapshot snapshotJournal = new NaniteEnergySnapshot();
 
@@ -32,8 +36,13 @@ public class NaniteEnergyHandler implements EnergyHandler, ValueIOSerializable {
         this(capacity, maxInsert, maxExtract, 0);
     }
 
-    //Master constructor, starts with nEnergy
+    //Asymmetrical transfer, starts with energy (machines/generators that have energy on placement)
     public NaniteEnergyHandler(int capacity, int maxInsert, int maxExtract, int nEnergy) {
+        this(capacity, maxInsert, maxExtract, nEnergy, null);
+    }
+
+    //Master constructor with energy change callback
+    public NaniteEnergyHandler(int capacity, int maxInsert, int maxExtract, int nEnergy, BiConsumer<Integer, Integer> energyChangedCallback) {
         TransferPreconditions.checkNonNegative(capacity);
         TransferPreconditions.checkNonNegative(maxInsert);
         TransferPreconditions.checkNonNegative(maxExtract);
@@ -43,7 +52,13 @@ public class NaniteEnergyHandler implements EnergyHandler, ValueIOSerializable {
         this.maxInsert = maxInsert;
         this.maxExtract = maxExtract;
         this.nEnergy = nEnergy;
+        this.energyChangedCallback = energyChangedCallback != null
+                ? energyChangedCallback
+                : (previousAmount, newAmount) -> {
+                    // Default implementation does nothing.
+                };
     }
+
 
     @Override
     public void serialize(ValueOutput output) {
@@ -90,7 +105,7 @@ public class NaniteEnergyHandler implements EnergyHandler, ValueIOSerializable {
 
     protected void onNEnergyChanged(int previousAmount, int newAmount) {
         // Notify listeners of the change in energy amount
-        // This is where you would implement any event or callback to notify other parts of the system
+        energyChangedCallback.accept(previousAmount, newAmount);
     }
 
     private class NaniteEnergySnapshot extends SnapshotJournal<Integer> {
